@@ -78,19 +78,13 @@ Realm:    hotel-reservation
 
 Application test users in Keycloak:
 
-```text
-admin@posam.sk / admin123
-staff          / staff123
-user           / user123
-```
+| Username | Email | Password |
+|---|---|---|
+| `admin@posam.sk` | `admin@posam.sk` | `admin123` |
+| `staff` | `staff@gmail.com` | `staff123` |
+| `user` | `user@gmail.com` | `user123` |
 
-The users are visible in Keycloak Admin Console under the `hotel-reservation` realm. Their emails are:
-
-```text
-admin@posam.sk -> admin@posam.sk
-staff          -> staff@gmail.com
-user           -> user@gmail.com
-```
+The users are visible in Keycloak Admin Console under the `hotel-reservation` realm.
 
 Grafana:
 
