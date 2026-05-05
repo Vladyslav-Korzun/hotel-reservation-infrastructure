@@ -47,6 +47,7 @@ GitLab:
 
 - Backend: `https://gitlab.fullstackacademy.sk/korzunv1/hotel-reservation-backend`
 - Frontend: `https://gitlab.fullstackacademy.sk/korzunv1/hotel-reservation-frontend`
+- Infrastructure: `https://gitlab.fullstackacademy.sk/korzunv1/hotel-reservation-infrastructure`
 
 ## Public URLs
 
