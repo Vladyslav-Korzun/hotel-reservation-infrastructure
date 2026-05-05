@@ -1,0 +1,15 @@
+.DS_Store
+.claude
+.idea/
+
+# Terraform files
+.terraform
+*.tfstate
+*.tfstate.*
+
+# Provisioning logy
+cookiecutter/logs/
+
+# Local tools and archives
+*.exe
+*.zip

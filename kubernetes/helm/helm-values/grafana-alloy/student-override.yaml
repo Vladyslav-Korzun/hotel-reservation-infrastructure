@@ -1,0 +1,134 @@
+controller:
+  type: deployment
+
+alloy:
+  extraEnv:
+    - name: STUDENT_PREFIX
+      value: "korzunv"
+    - name: CLUSTER_NAME
+      value: "aks-fsa-korzunv"
+
+  configMap:
+    content: |
+      discovery.kubernetes "pods" {
+        role = "pod"
+        namespaces {
+          names = ["app"]
+        }
+      }
+
+      discovery.relabel "metrics" {
+        targets = discovery.kubernetes.pods.targets
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+          action        = "keep"
+          regex         = "true"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+          target_label  = "__metrics_path__"
+          regex         = "(.+)"
+        }
+
+        rule {
+          source_labels = ["__address__", "__meta_kubernetes_pod_annotation_prometheus_io_port"]
+          action        = "replace"
+          regex         = "([^:]+)(?::\\d+)?;(\\d+)"
+          replacement   = "$1:$2"
+          target_label  = "__address__"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "app"
+        }
+
+        rule {
+          replacement  = sys.env("STUDENT_PREFIX")
+          target_label = "student"
+        }
+
+        rule {
+          replacement  = sys.env("CLUSTER_NAME")
+          target_label = "cluster"
+        }
+      }
+
+      prometheus.scrape "app" {
+        targets         = discovery.relabel.metrics.output
+        forward_to      = [prometheus.remote_write.instructor.receiver]
+        scrape_interval = "30s"
+      }
+
+      prometheus.remote_write "instructor" {
+        endpoint {
+          url = "https://prometheus.fullstackacademy.sk/api/v1/write"
+        }
+      }
+
+      discovery.relabel "logs" {
+        targets = discovery.kubernetes.pods.targets
+
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "app"
+        }
+
+        rule {
+          replacement  = sys.env("STUDENT_PREFIX")
+          target_label = "student"
+        }
+
+        rule {
+          replacement  = sys.env("CLUSTER_NAME")
+          target_label = "cluster"
+        }
+      }
+
+      loki.source.kubernetes "app" {
+        targets    = discovery.relabel.logs.output
+        forward_to = [loki.write.instructor.receiver]
+      }
+
+      loki.write "instructor" {
+        endpoint {
+          url = "https://alloy.fullstackacademy.sk/loki/api/v1/push"
+        }
+      }
+
+rbac:
+  create: true
+  extraClusterRoleRules:
+    - apiGroups: [""]
+      resources: ["pods/log"]
+      verbs: ["get", "list", "watch"]
+
+serviceAccount:
+  create: true

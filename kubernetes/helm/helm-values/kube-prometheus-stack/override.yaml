@@ -1,0 +1,80 @@
+# ── Alertmanager ─────────────────────────────────────────────────────────────
+alertmanager:
+  enabled: false
+
+# ── Grafana ───────────────────────────────────────────────────────────────────
+grafana:
+  # ServiceAccount pre Workload Identity
+  # Client ID zisti: terraform -chdir=terraform/00-fsa-common output grafana_client_id
+  serviceAccount:
+    create: true
+    name: kube-prometheus-stack-grafana
+    annotations:
+      azure.workload.identity/client-id: "ef9be04a-9e73-45ef-93bb-28f2afc96f31"
+
+  podLabels:
+    azure.workload.identity/use: "true"
+
+  admin:
+    existingSecret: "grafana-secret"
+    userKey: username
+    passwordKey: password
+
+  grafana.ini:
+    server:
+      root_url: https://grafana.fullstackacademy.sk
+    auth:
+      disable_login_form: false   # zachovaj fallback na lokálneho admin
+    auth.azuread:
+      enabled: true
+      name: Azure AD
+      auto_login: false
+      client_id: ef9be04a-9e73-45ef-93bb-28f2afc96f31
+      client_authentication: workload_identity
+      scopes: openid email profile
+      auth_url: https://login.microsoftonline.com/3590242b-a92d-4bb9-9ff9-eb7a1183f511/oauth2/v2.0/authorize
+      token_url: https://login.microsoftonline.com/3590242b-a92d-4bb9-9ff9-eb7a1183f511/oauth2/v2.0/token
+      allowed_domains: posam.onmicrosoft.com, posam.sk
+      allowed_organizations: 3590242b-a92d-4bb9-9ff9-eb7a1183f511
+      role_attribute_path: contains(roles[*], 'Admin') && 'Admin' || contains(roles[*], 'Editor') && 'Editor' || 'Viewer'
+      role_attribute_strict: false
+      allow_assign_grafana_admin: true
+      skip_org_role_sync: false
+      use_pkce: true
+
+  persistence:
+    enabled: true
+    size: 2Gi
+
+  # Loki datasource — prístup interne cez K8s service
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki.monitoring.svc.cluster.local:3100
+      isDefault: false
+      jsonData:
+        maxLines: 1000
+
+# ── Prometheus ────────────────────────────────────────────────────────────────
+prometheus:
+  prometheusSpec:
+    # Prijíma remote_write zo študentských Alloy agentov
+    enableRemoteWriteReceiver: true
+    # Retenčná politika
+    retention: 7d
+    # Persistence
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 8Gi
+
+# ── Node Exporter + Kube State Metrics ───────────────────────────────────────
+nodeExporter:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
