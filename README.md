@@ -77,15 +77,21 @@ Password: admin
 Realm:    hotel-reservation
 ```
 
-Imported Keycloak realm users:
+Application test users in Keycloak:
 
 ```text
-admin@posam.sk
-student@posam.sk
-teacher@posam.sk
+admin@posam.sk / admin123
+staff          / staff123
+user           / user123
 ```
 
-Their passwords are stored as hashed credentials inside the imported realm export. If a login test is required and the known workshop passwords do not work, open Keycloak Admin Console as `admin/admin` and reset the password for the needed user.
+The users are visible in Keycloak Admin Console under the `hotel-reservation` realm. Their emails are:
+
+```text
+admin@posam.sk -> admin@posam.sk
+staff          -> staff@gmail.com
+user           -> user@gmail.com
+```
 
 Grafana:
 
