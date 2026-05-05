@@ -28,7 +28,6 @@ DevOps project for the Hotel Reservation application. The stack is deployed to A
   - Prometheus metrics
   - Loki logs
   - Grafana Alloy collection
-  - Grafana dashboard JSON is included in `docs/monitoring/grafana-dashboard.json`
 - Rolling update strategy was adjusted for the small AKS node:
   - `maxSurge: 0`
   - `maxUnavailable: 1`
@@ -248,7 +247,6 @@ kubectl -n app set image deployment/fsa-fe fsa-fe="$ACR_REGISTRY/$IMAGE_NAME:$IM
 - Keycloak values: `kubernetes/helm/helm-values/keycloak/override.yaml`
 - Keycloak realm import: `kubernetes/helm/helm-values/keycloak/realm-fsa-configmap.yaml`
 - Monitoring notes: `docs/monitoring/README.md`
-- Grafana dashboard: `docs/monitoring/grafana-dashboard.json`
 
 ## Known Notes
 
