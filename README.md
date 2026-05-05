@@ -78,11 +78,11 @@ Realm:    hotel-reservation
 
 Application test users in Keycloak:
 
-| Username | Email | Password |
-|---|---|---|
-| `admin@posam.sk` | `admin@posam.sk` | `admin123` |
-| `staff` | `staff@gmail.com` | `staff123` |
-| `user` | `user@gmail.com` | `user123` |
+| Email | Password |
+|---|---|
+| `admin@posam.sk` | `admin123` |
+| `staff@gmail.com` | `staff123` |
+| `user@gmail.com` | `user123` |
 
 The users are visible in Keycloak Admin Console under the `hotel-reservation` realm.
 
