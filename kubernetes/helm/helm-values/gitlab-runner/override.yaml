@@ -59,9 +59,9 @@ runners:
         output_limit = 100096
         poll_timeout = 400
         cpu_request = "100m"
-        memory_request = "128Mi"
+        memory_request = "256Mi"
         cpu_limit = "500m"
-        memory_limit = "1024Mi"
+        memory_limit = "2048Mi"
         service_cpu_request = "100m"
         service_memory_request = "128Mi"
         service_cpu_limit = "500m"
