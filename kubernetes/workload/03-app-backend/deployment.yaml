@@ -6,10 +6,7 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 0
-      maxUnavailable: 1
+    type: Recreate
   selector:
     matchLabels:
       app: fsa-be
@@ -56,12 +53,11 @@ spec:
                 -Dspring.security.oauth2.resourceserver.jwt.issuer-uri=${ISSUER_URI}
                 -Dspring.security.oauth2.resourceserver.jwt.jwk-set-uri=${JWT_URI}
           resources:
-            # TODO: nastavit podla metrik podu, toto su len odhadnute hodnoty
             limits:
               cpu: 500m
               memory: 500Mi
             requests:
-              cpu: 100m
+              cpu: 50m
               memory: 250Mi
           ports:
             - name: http
