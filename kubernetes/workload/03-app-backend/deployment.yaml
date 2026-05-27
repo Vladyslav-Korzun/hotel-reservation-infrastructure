@@ -41,9 +41,9 @@ spec:
                   name: postgres-secret
                   key: db_password
             - name: ISSUER_URI
-              value: https://korzunv.98.71.77.25.nip.io/auth/realms/hotel-reservation
+              value: https://hotel-reservation-system.com/auth/realms/hotel-reservation
             - name: JWT_URI
-              value: https://korzunv.98.71.77.25.nip.io/auth/realms/hotel-reservation/protocol/openid-connect/certs
+              value: https://hotel-reservation-system.com/auth/realms/hotel-reservation/protocol/openid-connect/certs
             # Override casti Spring Boot konfiguracie kvoli citlivym udajom
             - name: JAVA_OPTS
               value: >-

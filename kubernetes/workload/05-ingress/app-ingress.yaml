@@ -16,10 +16,28 @@ spec:
   # Toto je potrebne iba pre cert-manager
   tls:
   - hosts:
-      - korzunv.98.71.77.25.nip.io
+      - hotel-reservation-system.com
+      - www.hotel-reservation-system.com
     secretName: app-tls-cert
   rules:
-    - host: korzunv.98.71.77.25.nip.io
+    - host: hotel-reservation-system.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fsa-fe
+                port:
+                  number: 80
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: fsa-keycloak-http
+                port:
+                  number: 80
+    - host: www.hotel-reservation-system.com
       http:
         paths:
           - path: /
@@ -56,10 +74,21 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-      - korzunv.98.71.77.25.nip.io
+      - hotel-reservation-system.com
+      - www.hotel-reservation-system.com
     secretName: app-tls-cert
   rules:
-    - host: korzunv.98.71.77.25.nip.io
+    - host: hotel-reservation-system.com
+      http:
+        paths:
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: fsa-be
+                port:
+                  number: 8080
+    - host: www.hotel-reservation-system.com
       http:
         paths:
           - path: /api(/|$)(.*)
